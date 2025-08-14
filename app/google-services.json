@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "19080178716",
+    "firebase_url": "https://my-safe-e5702-default-rtdb.firebaseio.com",
+    "project_id": "my-safe-e5702",
+    "storage_bucket": "my-safe-e5702.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19080178716:android:fde1d7a900531fa57103d9",
+        "android_client_info": {
+          "package_name": "com.MySafe.MySafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19080178716-s225t24bbosochkbrhure9o6bi1d81f2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.MySafe.MySafe",
+            "certificate_hash": "dcc4fff29b6ed336c540348772f91344aa4d0677"
+          }
+        },
+        {
+          "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7T4tu67oGIhEStagUkB9jUHs-9MDfPEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "19080178716-0tph3gqh2ovtjospumqm95vqfr4g6dtf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "MySafe.MySafe"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19080178716:android:474b99bf6efb62477103d9",
+        "android_client_info": {
+          "package_name": "com.example.MySafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19080178716-4muq97ffm4le9906lcciknr0blstmjdk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.MySafe",
+            "certificate_hash": "dcc4fff29b6ed336c540348772f91344aa4d0677"
+          }
+        },
+        {
+          "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7T4tu67oGIhEStagUkB9jUHs-9MDfPEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "19080178716-0tph3gqh2ovtjospumqm95vqfr4g6dtf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "MySafe.MySafe"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19080178716:android:8a98e95430509e3c7103d9",
+        "android_client_info": {
+          "package_name": "com.snapcompany.snapsafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19080178716-qgnarud7n7sububdsp6v8rpdqresqp2q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snapcompany.snapsafe",
+            "certificate_hash": "dcc4fff29b6ed336c540348772f91344aa4d0677"
+          }
+        },
+        {
+          "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7T4tu67oGIhEStagUkB9jUHs-9MDfPEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19080178716-3pljgb4ra7s08mrookdfdmh02tgc127l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "19080178716-0tph3gqh2ovtjospumqm95vqfr4g6dtf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "MySafe.MySafe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
