@@ -348,9 +348,14 @@ class ControlModel(
     fun decryptQrData(encryptedQrData: String): String? {
 
         val splitEncryptedQrData = encryptedQrData.split(" ")
+        Log.d("decryptQrData", "splitEncryptedQrData: $splitEncryptedQrData")
+
         val gateDataString = splitEncryptedQrData.getOrNull(0).toString()
+        Log.d("decryptQrData", "gateDataString: $gateDataString")
         val ivString = splitEncryptedQrData.getOrNull(1).toString()
+        Log.d("decryptQrData", "ivString: $iv")
         val iv = aesEncryption.stringToByteArray(ivString)
+        Log.d("decryptQrData", "iv: $iv")
 
         val decryptedQrData = aesEncryption.decryptStringWithSharedKey(gateDataString, secretKey, iv)
 
@@ -1089,6 +1094,8 @@ class ControlModel(
         val qrCodeDecrypted = decryptQrData(qrCode)
         val splitQrData = qrCodeDecrypted?.split(" ") ?: return null
 
+        Log.d("Qr", "splitQrData: $splitQrData")
+
         var gateData: GateData? = null
 
             gateData = GateData(
@@ -1107,7 +1114,8 @@ class ControlModel(
                 allowManageAccess = (splitQrData.getOrNull(12) ?: "false").toBoolean(),
                 allowGateConfig = (splitQrData.getOrNull(13) ?: "false").toBoolean(),
                 gateName = splitQrData.getOrNull(14) ?: "Agregar nombre",
-                accessFrom = splitQrData.getOrNull(15) ?: "accessFromNull"
+                accessFrom = splitQrData.getOrNull(15) ?: "accessFromNull",
+                admin = splitQrData.getOrNull(16) ?: "false"
             )
 
         return gateData

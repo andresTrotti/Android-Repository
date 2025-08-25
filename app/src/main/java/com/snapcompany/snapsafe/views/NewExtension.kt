@@ -110,9 +110,9 @@ fun NewExtension(
         emailExists = controlUiState.emailExists,
         checkingEmail = controlUiState.isCheckingEmail,
         deadlineSelected = controlUiState.deadlineSelected,
-        onSend = { extensionData ->
+        onSend = { extensionData, message ->
             onSendResult = false
-            controlModel.firestore.sendInvitationExtension(extensionData, controlModel.currentGateData){ result, message ->
+            controlModel.firestore.sendInvitationExtension(extensionData, controlModel.currentGateData, message){ result, message ->
                 onSendResult = result
                 if(result){
                     titleAlert = "Listo"
@@ -161,7 +161,7 @@ fun NewExtensionPreview(
     deadlineSelected: String = "",
     onCheckEmail: (email: String) -> Unit = {},
     onNewEmail: () -> Unit = {},
-    onSend: (extensionData: GateUser) -> Unit = {},
+    onSend: (extensionData: GateUser, message: String) -> Unit = {_,_ ->},
     onDateSelected: (Long) -> Unit = {}
 ) {
     val customColors = CustomColors()
@@ -197,6 +197,7 @@ fun NewExtensionPreview(
     var exitTimeButtonText by remember { mutableStateOf("12:00 a.m.") }
 
     var extensionData: GateUser = GateUser()
+    var message by remember { mutableStateOf("") }
 
 
     Scaffold(
@@ -222,7 +223,6 @@ fun NewExtensionPreview(
 
                                 extensionData.name = extensionNameValue.trim()
                                 extensionData.email = extensionEmailValue
-                                extensionData.message = extensionMessageValue
                                 extensionData.shareable = shareableToggle
                                 extensionData.allowHistory = allowHistoryAccessToggle
                                 extensionData.allowManageAccess = allowManageAccessToggle
@@ -242,7 +242,7 @@ fun NewExtensionPreview(
 
                                 checkExtension(extensionData, daysRestrictedToggle) { result, message ->
                                     if (result) {
-                                        onSend(extensionData)
+                                        onSend(extensionData, message)
                                     }
                                     else {
                                         titleAlert = "Error"
@@ -450,11 +450,11 @@ fun NewExtensionPreview(
                     HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
                     Row {
                         BasicTextField(
-                            value = extensionMessageValue,
+                            value = message,
                             cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                             textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
                             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                            onValueChange = { extensionMessageValue = it },
+                            onValueChange = { message = it },
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth()
@@ -467,7 +467,7 @@ fun NewExtensionPreview(
                                     modifier = Modifier.fillMaxWidth(),
                                     contentAlignment = Alignment.CenterStart
                                 ) {
-                                    if (extensionMessageValue.isEmpty()) {
+                                    if (message.isEmpty()) {
                                         Text(
                                             text = "Mensaje o nota",
                                             color = Color.Gray,

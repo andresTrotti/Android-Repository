@@ -19,6 +19,15 @@ data class ExtensionStatusTypes(
 )
 
 
+data class Invitation(
+    val gateId: String = "",
+    val email: String = "",
+    val fromName: String = "",
+    val fromEmail: String = "",
+    val message: String = "",
+)
+
+//TODO: Eliminar esta clase sharedExtensionAccess
 data class SharedExtensionAccess(
     val gateId: String = "",
     var gateName: String = "",
@@ -64,7 +73,7 @@ data class GateUser(
     var allowManageAccess: Boolean = false,
     var allowGateConfig: Boolean = false,
     var gateId: String = "",
-    var message: String = "",
+    //var message: String = "",
     var name: String = "",
     var restrictions: Boolean = false,
     var privateRestrictions: Boolean = false,
@@ -105,6 +114,7 @@ data class GateData(
     val version: String = "",
     var gateName: String = "",
     var accessFrom: String = "",
+    var admin: String = "false",
 
     var imageUri: String? = null,
 
@@ -128,6 +138,7 @@ data class UserData(
     var extensions: List<GateUser> = emptyList(),
     var sharedExtensions: List<SharedExtensionAccess> = emptyList(),
     var profileImageUrl: String? = null,
+    var invitation: List<Invitation> = emptyList(),
     var phone: String = "",
 )
 
@@ -255,6 +266,7 @@ class Firestore(val userEmail: String) {
 
     fun acceptSharedExtension(sharedExtensionAccess: SharedExtensionAccess, callback: (Boolean, String) -> Unit){
 
+
         val updateStatusMapFromExtensionEmail = mapOf(
             "Extensions" to mapOf(
                 sharedExtensionAccess.gateId to mapOf(
@@ -354,87 +366,67 @@ class Firestore(val userEmail: String) {
 
     }
 
-    fun sendInvitationExtension(extensionData: GateUser, gateData: GateData, callback: (Boolean, String) -> Unit){
+    fun sendInvitationExtension(newGateUser: GateUser, gateData: GateData, message: String, callback: (Boolean, String) -> Unit){
+
+        /*
+        * 1 - Enviar la invitacion al usuario
+        * 2 - Crear el gate User en el Id porton Devices/GateId/Users/ExtensionEmail
+        * 3 - En la ultima direccion habran los datos de restricciones y habilitacion del usuario etc o el gateUser
+        * 4 - Si la invitacion es aceptada se descargan los datos del porton junto con los datos de restricciones del usuario
+        * 5 - Si la invitacion es rechazada se elimina el gateUser del gateId y se elimina la invitacion del usuario
+        */
         val userData = userDataDb
 
-        if (userData != null){
+        val invitationMap =
+            mapOf("invitation" to
+                    mapOf( userData?.email
+                            to mapOf(
+                                    "gateId" to gateData.gateId,
+                                    "email" to newGateUser.email,
+                                    "fromName" to userData?.name,
+                                    "fromEmail" to userData?.email,
+                                    "message" to message
+                                    )
+                    )
+            )
 
-        }
-
-
-
-        if(userData != null) {
+        if ( userData != null ){
             db.collection("Users")
-                .document(userData.email)
-                .set(
-                    mapOf(
-                        "Extensions" to mapOf(
-                            extensionData.gateId to mapOf(
-                                extensionData.email to mapOf(
-                                    "name" to extensionData.name,
-                                    "boundExtension" to extensionData.boundExtension,
-                                    "independent" to extensionData.independent,
-                                    "daysAvailable" to extensionData.daysRestricted,
-                                    "deadline" to extensionData.deadline,
-                                    "departureTime" to extensionData.departureTime,
-                                    "entryTime" to extensionData.entryTime,
-                                    "enabled" to extensionData.enabled,
-                                    "shareable" to extensionData.shareable,
-                                    "allowHistory" to extensionData.allowHistory,
-                                    "allowManageAccess" to extensionData.allowManageAccess,
-                                    "allowGateConfig" to extensionData.allowGateConfig,
-                                    "message" to extensionData.message,
-                                    "restrictions" to extensionData.restrictions,
-                                    "privateRestrictions" to extensionData.privateRestrictions,
-                                    "status" to extensionData.status,
-                                )
-                            )
-                        )
-                    ), SetOptions.merge()
-                )
+                .document(newGateUser.email)
+                .set(invitationMap, SetOptions.merge())
                 .addOnSuccessListener {
-                    db.collection("Users")
-                        .document(extensionData.email)
+
+
+                    db.collection("Devices/${gateData.gateId}/GateUser")
+                        .document(newGateUser.email)
                         .set(
                             mapOf(
-                                "SharedExtensions" to mapOf(
-                                    userData.email to mapOf(
-                                        gateData.gateId to mapOf(
-                                            "name" to extensionData.name,
-                                            "boundExtension" to extensionData.boundExtension,
-                                            "daysAvailable" to extensionData.daysRestricted,
-                                            "deadline" to extensionData.deadline,
-                                            "departureTime" to extensionData.departureTime,
-                                            "entryTime" to extensionData.entryTime,
-                                            "enabled" to extensionData.enabled,
-                                            "message" to extensionData.message,
-                                            "restrictions" to extensionData.restrictions,
-                                            "privateRestrictions" to extensionData.privateRestrictions,
-                                            "status" to extensionData.status,
-                                            "shareable" to extensionData.shareable,
-                                            "gateId" to gateData.gateId,
-                                            "gateName" to gateData.gateName,
-                                            "characteristic" to gateData.characteristic,
-                                            "characteristicRx" to gateData.characteristicRx,
-                                            "service" to gateData.service,
-                                            "gateType" to gateData.gateType,
-                                            "shareEnable" to false,
-                                            "allowHistory" to extensionData.allowHistory,
-                                            "allowManageAccess" to extensionData.allowManageAccess,
-                                            "allowGateConfig" to extensionData.allowGateConfig,
-                                            "version" to gateData.version,
-                                            "mac" to gateData.mac,
-                                            "password" to gateData.password,
-                                            "pPassword" to "-",
-                                        )
-                                    )
-                                )
+                                "name" to newGateUser.name,
+                                "boundExtension" to newGateUser.boundExtension,
+                                "independent" to newGateUser.independent,
+                                "accessFrom" to userData.email,
+                                "admin" to false,
+                                "daysAvailable" to newGateUser.daysRestricted,
+                                "deadline" to newGateUser.deadline,
+                                "departureTime" to newGateUser.departureTime,
+                                "entryTime" to newGateUser.entryTime,
+                                "enabled" to newGateUser.enabled,
+                                "shareable" to newGateUser.shareable,
+                                "allowHistory" to newGateUser.allowHistory,
+                                "allowManageAccess" to newGateUser.allowManageAccess,
+                                "allowGateConfig" to newGateUser.allowGateConfig,
+                                "restrictions" to newGateUser.restrictions,
+                                "privateRestrictions" to newGateUser.privateRestrictions,
+                                "pending" to true,
                             ), SetOptions.merge()
                         )
                         .addOnSuccessListener {
                             callback(true, "Invitación enviada")
                         }
-
+                        .addOnFailureListener {
+                            callback(false, "Error al enviar la invitación")
+                            Log.e("Firestore", "Error saving user data", it)
+                        }
                 }
                 .addOnFailureListener {
                     callback(false, "Error al enviar la invitación")
@@ -442,7 +434,9 @@ class Firestore(val userEmail: String) {
         }
         else{
             Log.e("Firestore", "User data is null")
+            callback(false, "Error al enviar la invitación")
         }
+
     }
 
 
@@ -544,6 +538,8 @@ class Firestore(val userEmail: String) {
                     val extensions = documentSnapshot.data?.get("Extensions") as? Map<*, *>
                     val sharedExtensions =
                         documentSnapshot.data?.get("SharedExtensions") as? Map<*, *>
+                    val invitations = documentSnapshot.data?.get("invitation") as? Map<*, *>
+                    val invitationList = invitationMapToInvitationObject(invitations)
                     val extensionsList = extensionMapToExtensionObject(extensions)
                     val sharedExtensionsList = extensionsMapToSExtensionObject(sharedExtensions)
 
@@ -579,6 +575,21 @@ class Firestore(val userEmail: String) {
 
     }
 
+    fun invitationMapToInvitationObject(invitations: Map<*,*>?): List<Invitation> {
+        val result = mutableListOf<Invitation>()
+
+        invitations?.keys?.forEach { email ->
+            val invitation = invitations[email] as? Map<*, *>
+            result += Invitation(
+                email = email.toString(),
+                gateId = invitation?.get("gateId").toString(),
+                fromName = invitation?.get("fromName").toString(),
+                fromEmail = invitation?.get("fromEmail").toString(),
+                message = invitation?.get("message").toString(),
+            )
+        }
+        return result
+    }
     fun extensionMapToExtensionObject(extensionMap: Map<*, *>?): List<GateUser> {
 
         val result = mutableListOf<GateUser>()
@@ -602,7 +613,6 @@ class Firestore(val userEmail: String) {
                     enabled = userMap?.get("enabled") as? Boolean ?: false,
                     shareable = userMap?.get("shareable") as? Boolean ?: false,
                     independent = userMap?.get("independent") as? Boolean ?: false,
-                    message = userMap?.get("message").toString(),
                     restrictions = userMap?.get("restrictions") as? Boolean ?: false,
                     privateRestrictions = userMap?.get("privateRestrictions") as? Boolean ?: false,
                     status = userMap?.get("status").toString()

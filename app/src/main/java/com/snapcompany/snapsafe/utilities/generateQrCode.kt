@@ -59,6 +59,5 @@ fun QrCodeView(encryptedText: String? , size: Int) {
         Text("Error generando el QR Code")
     }
 
-
 }
 
